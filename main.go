@@ -35,6 +35,8 @@ func child() {
 	fmt.Printf("Running in child %v as %d\n", os.Args[2:], os.Getpid())
 
 	syscall.Sethostname([]byte("container")) // child is in new namespace, so we can change the hostname
+	syscall.Chroot("/home/jizg/ubuntufs")
+	syscall.Chdir("/")
 
 	cmd := exec.Command(os.Args[2], os.Args[3:]...)
 	cmd.Stdin = os.Stdin

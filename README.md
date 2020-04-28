@@ -87,3 +87,27 @@ root@container:$ps
 30590 pts/10   00:00:00 bash
 30818 pts/10   00:00:00 ps
 ```
+
+## Step6. Set containerized process root directory to a new path
+In order to isolate containerized process from sharing with host os `/proc`, use `chroot` and `chdir` syscall to set a new root dir for containerized process.
+Firstly, use the following command to prepare a clean ubuntu filesystem.
+```bash
+$ CID=$(docker create ubuntu)
+$ ROOTFS=~/ubuntufs
+$ docker export $CID | tar -xf - -C $ROOTFS
+```
+In `child` function, call `chroot` and `chdir` syscall to set root direcotry to the ubuntufs folder. You can check the new root for containerized process by the following commands.
+
+In containerized bash.
+```bash
+root@container:$sleep 100
+```
+In host OS bash.
+```bash
+root@ubuntu18:$ps -C sleep
+PID TTY          TIME CMD
+ 5697 pts/10   00:00:00 sleep
+root@ubuntu18:$ls -l /proc/5697/root
+lrwxrwxrwx 1 root root 0 Apr 28 23:36 /proc/5697/root -> /home/jizg/ubuntufs
+```
+So we actually use the extracted `ubuntu:latest` image on docker hub as our new root directory.
