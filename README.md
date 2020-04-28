@@ -98,9 +98,11 @@ $ docker export $CID | tar -xf - -C $ROOTFS
 ```
 In `child` function, call `chroot` and `chdir` syscall to set root direcotry to the ubuntufs folder. You can check the new root for containerized process by the following commands.
 
-In containerized bash.
+In containerized bash. You can also find that `ps` will get error, as there is still nothing under `/proc`.
 ```bash
 root@container:$sleep 100
+root@container:$ps
+Error, do this: mount -t proc proc /proc
 ```
 In host OS bash.
 ```bash
