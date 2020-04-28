@@ -113,3 +113,21 @@ root@ubuntu18:$ls -l /proc/5697/root
 lrwxrwxrwx 1 root root 0 Apr 28 23:36 /proc/5697/root -> /home/jizg/ubuntufs
 ```
 So we actually use the extracted `ubuntu:latest` image on docker hub as our new root directory.
+
+## Step7. Enable Mount Namespace in run function, and mount /proc to containerized process in child function
+By mount `/proc` to the new root file system, `ps` will only display processes in the containerized process.
+```bash
+root@container:$ps
+  PID TTY          TIME CMD
+    1 ?        00:00:00 exe
+    5 ?        00:00:00 bash
+    7 ?        00:00:00 ps
+```
+In host OS.
+```bash
+root@ubuntu18:$mount | grep proc
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+systemd-1 on /proc/sys/fs/binfmt_misc type autofs (rw,relatime,fd=25,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=13556)
+proc on /home/jizg/ubuntufs/proc type proc (rw,relatime)
+```
+After adding unshare flags for Mount Namespace, the new root directory information will not be exposed to host OS. Hence the `mount | grep proc` in host OS will not return mounting info about `/proc` in containerized process.
