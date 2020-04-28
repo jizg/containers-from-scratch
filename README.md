@@ -30,7 +30,7 @@ root@ubuntu18:$hostname container
 root@ubuntu18:$hostname
 container
 ```
-while in parent shell:
+while in parent shell hostname remains unchanged:
 ```bash
 root@ubuntu18:$hostname
 ubuntu18
