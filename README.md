@@ -67,3 +67,23 @@ root@container:$ps fax
 27852 pts/10   S      0:00      |   |                       \_ /bin/bash
 28779 pts/10   R+     0:00      |   |                           \_ ps fax
 ```
+
+## Step5. Modify run function to enable PID Namespace
+In `run` function, let the PID in the containerized bash start from 1 by enabling PID Namespace.
+```bash
+root@ubuntu18:$go run main.go run /bin/bash
+Running [/bin/bash] as 30582
+Running in child [/bin/bash] as 1
+```
+But if you run `ps` again, you still get all parent processes of this bash process, and the PIDs are still the number of PIDs in host OS. This is beause these processes information are from `/proc` folder which is not isolated by UTS and PID namespace, and therefore still shared between host and containerized bash.
+```bash
+root@container:$ps
+  PID TTY          TIME CMD
+30191 pts/10   00:00:00 sudo
+30192 pts/10   00:00:00 bash
+30561 pts/10   00:00:00 go
+30582 pts/10   00:00:00 main
+30586 pts/10   00:00:00 exe
+30590 pts/10   00:00:00 bash
+30818 pts/10   00:00:00 ps
+```
