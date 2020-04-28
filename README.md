@@ -9,3 +9,11 @@ $go run main.go run Hello, world
 Running [Hello, world]
 ```
 
+## Step2. Modify run function to execute the command in arguments
+modify run() function to enablue executing the command in arguments
+
+```bash
+$go run main.go run echo Hello, world 
+Running [echo Hello, world]
+Hello, world
+```
