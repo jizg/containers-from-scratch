@@ -1,7 +1,10 @@
 # containers-from-scratch
 Learning Go programming and linux containerization by reimplementing https://github.com/lizrice/containers-from-scratch step by step
 
-**Notice:** you can reproduce every step by checkout the corresponding tag with git command.
+**Notice:** Every step was tagged in this repository. You can jump to the final state of each step by the following git command:
+```
+git checkout -f stepx
+```
 
 ## Step1. Setup run function
 
