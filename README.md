@@ -1,7 +1,12 @@
 # containers-from-scratch
-Learning Go and containers by re implementing https://github.com/lizrice/containers-from-scratch step by step
+Learning Go programming and linux containerization by reimplementing https://github.com/lizrice/containers-from-scratch step by step
+
+**Notice:** you can reproduce every step by checkout the corresponding tag with git command.
 
 ## Step1. Setup run function
+
+`git checkout -f step1`
+
 insert run() function, print out all arguments after the third one `os.Args[2:]`
 
 ```bash
@@ -10,6 +15,9 @@ Running [Hello, world]
 ```
 
 ## Step2. Modify run function to execute the command in arguments
+
+`git checkout -f step2`
+
 modify run() function to enable executing the command in arguments
 
 ```bash
@@ -19,6 +27,9 @@ Hello, world
 ```
 
 ## Step3. Modify run function to enable UTS Namespace
+
+`git checkout -f step3`
+
 By enabling UTS Namespace, the hostname can be changed without affecting host process hostname.
 
 ```bash
@@ -37,6 +48,10 @@ ubuntu18
 ```
 
 ## Step4. Add child function in order to change hostname before entering bash
+
+`git checkout -f step4`
+
+
 In order to display an updated hostname in bash, add a `child` function and let `run` to execute this `child` in the new UTS namespace with updated hostname.
 ```bash
 root@ubuntu18:$go run main.go run /bin/bash
@@ -69,6 +84,9 @@ root@container:$ps fax
 ```
 
 ## Step5. Modify run function to enable PID Namespace
+
+`git checkout -f step5`
+
 In `run` function, let the PID in the containerized bash start from 1 by enabling PID Namespace.
 ```bash
 root@ubuntu18:$go run main.go run /bin/bash
@@ -89,6 +107,9 @@ root@container:$ps
 ```
 
 ## Step6. Set containerized process root directory to a new path
+
+`git checkout -f step6`
+
 In order to isolate containerized process from sharing with host os `/proc`, use `chroot` and `chdir` syscall to set a new root dir for containerized process.
 Firstly, use the following command to prepare a clean ubuntu filesystem.
 ```bash
@@ -115,6 +136,9 @@ lrwxrwxrwx 1 root root 0 Apr 28 23:36 /proc/5697/root -> /home/jizg/ubuntufs
 So we actually use the extracted `ubuntu:latest` image on docker hub as our new root directory.
 
 ## Step7. Enable Mount Namespace in run function, and mount /proc to containerized process in child function
+
+`git checkout -f step7`
+
 By mount `/proc` to the new root file system, `ps` will only display processes in the containerized process.
 ```bash
 root@container:$ps
@@ -133,6 +157,8 @@ proc on /home/jizg/ubuntufs/proc type proc (rw,relatime)
 After adding unshare flags for Mount Namespace, the new root directory information will not be exposed to host OS. Hence the `mount | grep proc` in host OS will not return mounting info about `/proc` in containerized process.
 
 ## Step8. Add pids cgroup(process number controller) to child function to limit the max process number to 20 for containerized process environment
+
+`git checkout -f step8`
 
 Add a new function `cg` to config the pids cgroup and set max process number to 20, call `cg` in `child`.
 
