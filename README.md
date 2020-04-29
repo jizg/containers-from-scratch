@@ -131,3 +131,28 @@ systemd-1 on /proc/sys/fs/binfmt_misc type autofs (rw,relatime,fd=25,pgrp=1,time
 proc on /home/jizg/ubuntufs/proc type proc (rw,relatime)
 ```
 After adding unshare flags for Mount Namespace, the new root directory information will not be exposed to host OS. Hence the `mount | grep proc` in host OS will not return mounting info about `/proc` in containerized process.
+
+## Step8. Add pids cgroup(process number controller) to child function to limit the max process number to 20 for containerized process environment
+
+Add a new function `cg` to config the pids cgroup and set max process number to 20, call `cg` in `child`.
+
+```bash
+root@container:$ps
+  PID TTY          TIME CMD
+    1 ?        00:00:00 exe
+    5 ?        00:00:00 bash
+    7 ?        00:00:00 ps
+root@container:$sleep 100
+```
+In host OS.
+```bash
+root@ubuntu18:$ps -C sleep
+PID TTY          TIME CMD
+30048 pts/10   00:00:00 sleep
+root@ubuntu18:$cd /sys/fs/cgroup/pids/jizg
+root@ubuntu18:$cat cgroup.procs
+30038
+30045
+30048
+```
+And you can run `:() { : | : & }; :` (a fork bomb) in the containerized bash to fork new process endless, and eventually failed when total process number reaches 20.
